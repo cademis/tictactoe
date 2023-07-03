@@ -20,3 +20,5 @@ const player1 = playerFactory("sally");
 const player2 = playerFactory("jeff");
 
 player1.sayName();
+
+console.log(player1)
