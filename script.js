@@ -4,22 +4,6 @@
 
 // When there is multiple of something, use a factory function
 
-// display the board
-const gameBoard = (() => {
-  let board = ["X", null, null, "O", null, "X", null, "O", null];
-
-  const boardElement = document.querySelector(".board");
-  const cells = boardElement.querySelectorAll(".cell");
-  const render = function () {
-    cells.forEach((cell, index) => {
-      cell.innerHTML = board[index];
-    });
-  };
-  return { render };
-})();
-
-// gameBoard.render();
-
 const createPlayerFactory = (name, mark) => {
   return {
     name,
@@ -42,20 +26,40 @@ const displayController = (() => {
     gameOver = false;
     gameBoard.render();
   };
+  const handleClick = (event) => {
+    let index = +event.target.id.split("-")[1];
+    console.log(index);
+    console.log(players[currentPlayerIndex].mark);
+    gameBoard.update(index, players[currentPlayerIndex].mark);
+    currentPlayerIndex = currentPlayerIndex === 0 ? 1 : 0;
+  };
 
-  //   const test = () => {
-  //     console.log("hello");
-  //   };
-  //
-  //   let bindElements = function () {
-  //     cells.forEach((cell, i) => {
-  //       cell.addEventListener("click", () => {
-  //         console.log("hello");
-  //       });
-  //     });
-  //   };
-  return { start };
+  return { start, handleClick };
 })();
+
+// display the board
+const gameBoard = (() => {
+  let board = ["X", null, null, "O", null, "X", null, "O", null];
+
+  const boardElement = document.querySelector(".board");
+  const cells = boardElement.querySelectorAll(".cell");
+  const render = function () {
+    cells.forEach((cell, index) => {
+      cell.innerHTML = board[index];
+    });
+  };
+  cells.forEach((cell) => {
+    cell.addEventListener("click", displayController.handleClick);
+  });
+  const update = (index, mark) => {
+    board[index] = mark;
+    render();
+  };
+
+  return { render, update };
+})();
+
+// gameBoard.render();
 
 displayController.start();
 
