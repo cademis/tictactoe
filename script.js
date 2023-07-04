@@ -24,12 +24,12 @@ const displayController = (() => {
     ];
     currentPlayerIndex = 0;
     gameOver = false;
+    // gameBoard.clearBoard();
     gameBoard.render();
   };
   const handleClick = (event) => {
     let index = +event.target.id.split("-")[1];
-    console.log(index);
-    console.log(players[currentPlayerIndex].mark);
+    if (gameBoard.getGameBoard()[index] !== null) return;
     gameBoard.update(index, players[currentPlayerIndex].mark);
     currentPlayerIndex = currentPlayerIndex === 0 ? 1 : 0;
   };
@@ -39,7 +39,11 @@ const displayController = (() => {
 
 // display the board
 const gameBoard = (() => {
-  let board = ["X", null, null, "O", null, "X", null, "O", null];
+  let board = [null, null, null, null, null, null, null, null, null];
+
+  const clearBoard = () => {
+    board = [null, null, null, null, null, null, null, null, null];
+  };
 
   const boardElement = document.querySelector(".board");
   const cells = boardElement.querySelectorAll(".cell");
@@ -55,11 +59,14 @@ const gameBoard = (() => {
     board[index] = mark;
     render();
   };
+  const getGameBoard = () => board;
 
-  return { render, update };
+  return { render, update, getGameBoard, clearBoard };
 })();
 
-// gameBoard.render();
+// let startButton = document.querySelector("#start");
+
+// startButton.addEventListener("click", () => displayController.start());
 
 displayController.start();
 
