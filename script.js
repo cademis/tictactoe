@@ -16,12 +16,14 @@ const displayController = (() => {
   let players;
   let currentPlayerIndex;
   let gameOver;
+  let announceResultElement = document.querySelector(".announce");
 
   const start = () => {
     players = [
       createPlayerFactory(document.querySelector("#player1").value, "X"),
       createPlayerFactory(document.querySelector("#player2").value, "O"),
     ];
+    announceResultElement.innerHTML = "";
     console.log(`hello ${players[0].name}`);
     currentPlayerIndex = 0;
     gameOver = false;
@@ -29,11 +31,20 @@ const displayController = (() => {
     gameBoard.render();
   };
   const handleClick = (event) => {
+    if (gameOver) return;
     let index = +event.target.id.split("-")[1];
 
     if (gameBoard.getGameBoard()[index] !== null) return;
     gameBoard.update(index, players[currentPlayerIndex].mark);
-    checkForWinner(gameBoard.getGameBoard());
+    if (checkForWinner(gameBoard.getGameBoard()) === true) {
+      console.log(`${players[currentPlayerIndex].name} is the winner`);
+      announceResultElement.innerHTML = `${players[currentPlayerIndex].name} is the winner`;
+      gameOver = true;
+    } else if (checkForTie(gameBoard.getGameBoard()) === true) {
+      console.log(`Tie!`);
+      announceResultElement.innerHTML = `Tie!`;
+      gameOver = true;
+    }
     currentPlayerIndex = currentPlayerIndex === 0 ? 1 : 0;
   };
 
@@ -41,6 +52,7 @@ const displayController = (() => {
     for (let i = 0; i < 9; i++) {
       gameBoard.update(i, null);
     }
+    start();
   };
 
   const checkForWinner = (board) => {
@@ -59,13 +71,24 @@ const displayController = (() => {
       const [a, b, c] = combination;
       if (board[a] === board[b] && board[b] === board[c]) {
         if (board[a] !== null) {
-          console.log(`${board[a]} is the winner`);
+          // console.log(`${players[currentPlayerIndex].name} is the winner`);
+          // stop all code and announce winner on screen
+
+          return true;
         }
       }
     }
+    return false;
   };
 
-  return { start, handleClick, restart, checkForWinner };
+  const checkForTie = (array) => {
+    if (!array.includes(null)) {
+      // console.log(`Tie!`);
+      return true;
+    }
+  };
+
+  return { start, handleClick, restart, checkForWinner, checkForTie };
 })();
 
 // display the board
