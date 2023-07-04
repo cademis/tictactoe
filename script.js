@@ -22,6 +22,7 @@ const displayController = (() => {
       createPlayerFactory(document.querySelector("#player1").value, "X"),
       createPlayerFactory(document.querySelector("#player2").value, "O"),
     ];
+    console.log(`hello ${players[0].name}`);
     currentPlayerIndex = 0;
     gameOver = false;
     // gameBoard.clearBoard();
@@ -41,10 +42,6 @@ const displayController = (() => {
 const gameBoard = (() => {
   let board = [null, null, null, null, null, null, null, null, null];
 
-  const clearBoard = () => {
-    board = [null, null, null, null, null, null, null, null, null];
-  };
-
   const boardElement = document.querySelector(".board");
   const cells = boardElement.querySelectorAll(".cell");
   const render = function () {
@@ -61,14 +58,17 @@ const gameBoard = (() => {
   };
   const getGameBoard = () => board;
 
-  return { render, update, getGameBoard, clearBoard };
+  return { render, update, getGameBoard };
 })();
 
-// let startButton = document.querySelector("#start");
+let startButton = document.querySelector("#start");
 
-// startButton.addEventListener("click", () => displayController.start());
+startButton.addEventListener("click", () => {
+  console.log("start button clicked");
+  displayController.start();
+});
 
-displayController.start();
+// displayController.start();
 
 // displayController.bindElements();
 
