@@ -30,12 +30,42 @@ const displayController = (() => {
   };
   const handleClick = (event) => {
     let index = +event.target.id.split("-")[1];
+
     if (gameBoard.getGameBoard()[index] !== null) return;
     gameBoard.update(index, players[currentPlayerIndex].mark);
+    checkForWinner(gameBoard.getGameBoard());
     currentPlayerIndex = currentPlayerIndex === 0 ? 1 : 0;
   };
 
-  return { start, handleClick };
+  const restart = () => {
+    for (let i = 0; i < 9; i++) {
+      gameBoard.update(i, null);
+    }
+  };
+
+  const checkForWinner = (board) => {
+    const winningCombination = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+
+    for (let combination of winningCombination) {
+      const [a, b, c] = combination;
+      if (board[a] === board[b] && board[b] === board[c]) {
+        if (board[a] !== null) {
+          console.log(`${board[a]} is the winner`);
+        }
+      }
+    }
+  };
+
+  return { start, handleClick, restart, checkForWinner };
 })();
 
 // display the board
@@ -66,6 +96,13 @@ let startButton = document.querySelector("#start");
 startButton.addEventListener("click", () => {
   console.log("start button clicked");
   displayController.start();
+});
+
+let restartButton = document.querySelector("#restart");
+
+restartButton.addEventListener("click", () => {
+  console.log("game restared");
+  displayController.restart();
 });
 
 // displayController.start();
